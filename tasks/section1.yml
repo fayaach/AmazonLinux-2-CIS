@@ -823,14 +823,14 @@
 
 - name: "SCORED | 1.4.1 | PATCH | Ensure permissions on bootloader config are configured"
   file:
-    path: "{{ grub_cfg.stat.lnk_source }}"
+    path: /boot/grub2/grub.cfg
     owner: root
     group: root
     mode: 0600
   when:
     - amazonlinux2cis_level1 is defined and amazonlinux2cis_level1
     - grub_cfg is defined
-    - grub_cfg.stat.exists and not grub_cfg.stat.islnk
+    - grub_cfg.stat.exists
   tags:
     - level1
     - scored
