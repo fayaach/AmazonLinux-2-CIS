@@ -830,7 +830,7 @@
   when:
     - amazonlinux2cis_level1 is defined and amazonlinux2cis_level1
     - grub_cfg is defined
-    - grub_cfg.stat.exists and grub_cfg.stat.islnk
+    - grub_cfg.stat.exists and not grub_cfg.stat.islnk
   tags:
     - level1
     - scored
