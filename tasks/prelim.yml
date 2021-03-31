@@ -1,0 +1,182 @@
+---
+## START COPYRIGHT NOTICE ##
+# AmazonLinux2-CIS Ansible Script
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+## END COPYRIGHT NOTICE ##
+# Preliminary tasks that should always be run
+# List users in order to look files inside each home directory
+- name: "PRELIM | List users accounts"
+  command: "awk -F: '{print $1}' /etc/passwd"
+  register: users
+  changed_when: no
+  check_mode: no
+
+- name: "PRELIM | Gather accounts with empty password fields"
+  shell: "cat /etc/shadow | awk -F: '($2 == \"\" ) {j++;print $1; } END {exit j}'"
+  register: empty_password_accounts
+  changed_when: no
+  check_mode: no
+
+- name: "PRELIM | Gather UID 0 accounts other than root"
+  shell: "cat /etc/passwd | awk -F: '($3 == 0 && $1 != \"root\") {i++;print $1 } END {exit i}'"
+  register: uid_zero_accounts_except_root
+  changed_when: no
+  check_mode: no
+
+- name: "PRELIM | Section 4.1 | Configure System Accounting (auditd)"
+  yum:
+      name: audit
+      state: present
+
+- name: "PRELIM | Section 5.1 | Configure cron"
+  yum:
+      name: cronie
+      state: present
+
+- name: "PRELIM | Check if prelink package is installed"
+  command: rpm -q prelink
+  register: prelink_installed
+  changed_when: no
+  failed_when: no
+  check_mode: no
+
+- name: "PRELIM | Check if postfix package is installed"
+  command: rpm -q postfix
+  register: postfix_installed
+  changed_when: no
+  failed_when: no
+  check_mode: no
+
+# Individual service checks
+- name: "PRELIM | Check for xinetd service"
+  command: service xinetd status
+  register: xinetd_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for ntpd service"
+  command: service ntpd status
+  register: ntpd_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for chronyd service"
+  command: service chronyd status
+  register: chronyd_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for avahi-daemon service"
+  command: service avahi-daemon status
+  register: avahi_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for cups package"
+  command: service cups status
+  register: cups_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for dhcpd service"
+  command: service dhcpd status
+  register: dhcpd_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for slapd service | OpenLDAP Server"
+  command: service slapd status
+  register: slapd_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for nfs service"
+  command: service nfs status
+  register: nfs_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for rpcbind service"
+  command: service rpcbind status
+  register: rpcbind_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for named service"
+  command: service named status
+  register: named_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for vsftpd service"
+  command: service vsftpd status
+  register: vsftpd_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for httpd service"
+  command: service httpd status
+  register: httpd_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for dovecot service"
+  command: service dovecot status
+  register: dovecot_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for smb service"
+  command: service smb status
+  register: smb_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for squid service"
+  command: service squid status
+  register: squid_service_status
+  changed_when: no
+  check_mode: no
+
+- name: "PRELIM | Check for snmpd service"
+  command: service snmpd status
+  register: snmpd_service_status
+  changed_when: no
+  check_mode: no
+
+- name: "PRELIM | Check for ypserv service"
+  command: service ypserv status
+  register: ypserv_service_status
+  changed_when: no
+  check_mode: no
+
+- name: "PRELIM | Check for rsh.socket service"
+  command: service xinetd status
+  register: rsh_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for rlogin.socket service"
+  command: service xinetd status
+  register: rlogin_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for rexec.socket service"
+  command: service xinetd status
+  register: rexec_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for telnet service"
+  command: service xinetd status
+  register: telnet_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for tftp service"
+  command: service tftp status
+  register: tftp_service_status
+  ignore_errors: yes
+
+- name: "PRELIM | Check for rsyncd service"
+  command: service rsyncd status
+  register: rsyncd_service_status
+  changed_when: no
+  check_mode: no
+
+- name: "PRELIM | Check for ntalk service"
+  command: service ntalk status
+  register: ntalk_service_status
+  changed_when: no
+  check_mode: no
+
+- name: "PRELIM | Check for autofs service"
+  command: service autofs status
+  register: autofs_service_status
+  changed_when: no
+  check_mode: no

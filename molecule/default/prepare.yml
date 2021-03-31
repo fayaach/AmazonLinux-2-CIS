@@ -1,0 +1,15 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: no
+
+  tasks:
+
+    - name: Ensuring prerequisites are installed
+      package:
+        name:
+          - sudo
+          - initscripts
+          - iptables
+          - openssh
+        state: present
